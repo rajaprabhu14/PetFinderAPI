@@ -21,4 +21,8 @@ public class Pet
 
     [Required]
     public bool IsFound { get; set; }
+
+    public int UserId {  get; set; }
+
+    public DateTime MissingDate { get; set; }
 }
