@@ -4,8 +4,7 @@ namespace PetFinder.Entities;
 
 public class Pet
 {
-    [Required]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
     public string Name { get; set; } = string.Empty;
@@ -19,10 +18,7 @@ public class Pet
     [Required]
     public string FilePath { get; set; } = string.Empty;
 
-    [Required]
-    public bool IsFound { get; set; }
+    public bool IsFound { get; set; } = false;
 
-    public int UserId {  get; set; }
-
-    public DateTime MissingDate { get; set; }
+    public DateTime MissingDate { get; set; } = DateTime.Now;
 }

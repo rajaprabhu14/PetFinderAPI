@@ -1,8 +1,8 @@
-﻿namespace PetFinder.Models.Pet;
+﻿namespace PetFinder.DTO.Pet;
 
 public class PetDetail
 {
-    public int? Id { get; set; }
+    public Guid Id { get; set; }
 
     public string? Name { get; set; }
 
@@ -13,4 +13,6 @@ public class PetDetail
     public string? FilePath { get; set; }
 
     public bool IsFound { get; set; }
+
+    public DateTime MissingDate {  get; set; }
 }

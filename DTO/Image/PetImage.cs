@@ -1,4 +1,4 @@
-﻿namespace PetFinder.Models.Image;
+﻿namespace PetFinder.DTO.Image;
 
 public class PetImage
 {

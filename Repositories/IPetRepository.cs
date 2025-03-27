@@ -1,13 +1,13 @@
-﻿using PetFinder.Entities;
-using PetFinder.Models.Pet;
+﻿using PetFinder.DTO.Pet;
+using PetFinder.Entities;
 
 namespace PetFinder.Repositories;
 
 public interface IPetRepository
 {
-    Task<List<PetDetail>> GetAll();
+    Task<List<PetDetail>> GetPets();
 
-    Task<bool> AddPetDetail(Pet pet);
+    Task<Guid> AddPet(Pet pet);
 
-    Task<bool> UpdatePet(int id);
+    Task<Guid> UpdatePet(Guid id);
 }

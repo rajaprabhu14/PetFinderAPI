@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using PetFinder.Data;
+using PetFinder.DTO.Pet;
 using PetFinder.Entities;
-using PetFinder.Infrastructure;
-using PetFinder.Models;
-using PetFinder.Models.Pet;
 using PetFinder.Repositories;
 
 namespace PetFinder.Services;
@@ -12,52 +10,56 @@ public class PetService(PetDbContext petDbContext) : IPetRepository
 {
     private readonly PetDbContext _petDbContext = petDbContext;
 
-    public async Task<bool> AddPetDetail(Pet pet)
+    public async Task<List<PetDetail>> GetPets()
     {
-        _petDbContext.Pets.Add(pet);
-        await _petDbContext.SaveChangesAsync();
+        var response = await _petDbContext.Pets.Select(pet => new PetDetail
+        {
+            Id = pet.Id,
+            Name = pet.Name,
+            ContactAddress = pet.ContactAddress,
+            MissingDate = pet.MissingDate,
+            LostCity = pet.LostCity,
+            IsFound = pet.IsFound,
+            FilePath = pet.FilePath,
+        }).AsNoTracking().ToListAsync();
 
-        return true;
+        return response;
     }
 
-    public async Task<List<PetDetail>> GetAll()
+    public async Task<Guid> AddPet(Pet pet)
     {
-        var response = await _petDbContext.Pets.ToListAsync();
-
-        var pets = new List<PetDetail>();
-
-        foreach (var item in response)
+        try
         {
-            var details = new PetDetail()
-            {
-                Id = item.Id,
-                Name = item.Name,
-                ContactAddress = item.ContactAddress,
-                LostCity = item.LostCity,
-                FilePath = item.FilePath,
-                IsFound = item.IsFound,
-            };
-            
-            pets.Add(details);
-        }
-
-        return pets;
-    }
-
-    public async Task<bool> UpdatePet(int id)
-    {
-        var response = await _petDbContext.Pets.FindAsync(id);
-
-        if(response is not null)
-        {
-            response.IsFound = true;
-            _petDbContext.Pets.Update(response ?? new Pet());
+            pet.Id = Guid.NewGuid();
+            _petDbContext.Pets.Add(pet);
             await _petDbContext.SaveChangesAsync();
-
-            return true;
+        }
+        catch (Exception ex)
+        {
+            return Guid.Empty;
         }
 
-        return false;
-        
+        return pet.Id;
+    }
+
+    public async Task<Guid> UpdatePet(Guid id)
+    {
+        try
+        {
+            var response = await _petDbContext.Pets.FindAsync(id);
+
+            if (response is not null)
+            {
+                response.IsFound = true;
+                _petDbContext.Pets.Update(response);
+                await _petDbContext.SaveChangesAsync();
+
+                return response.Id;
+            }
+        }
+
+        catch { return Guid.Empty; }
+
+        return id;
     }
 }
